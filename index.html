@@ -1,0 +1,369 @@
+<html lang="en" vid="0"><head vid="1">
+    <meta charset="UTF-8" vid="2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
+    <title vid="4">motus | revit automation suite</title>
+    <style vid="5">
+        :root {
+            --bg: #ffffff;
+            --ink: #000000;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --font-mono: 'Courier New', Courier, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: none; 
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--ink);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            width: 100vw;
+            min-height: 100vh;
+        }
+
+        
+        #cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            background: var(--ink);
+            border-radius: 50%;
+            pointer-events: none;
+            mix-blend-mode: difference;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s;
+        }
+
+        body:hover #cursor {
+            width: 40px;
+            height: 40px;
+        }
+
+        
+        h1 {
+            font-size: clamp(4rem, 15vw, 12rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            line-height: 0.8;
+            text-transform: lowercase;
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--ink);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        p {
+            font-size: 1.5rem;
+            line-height: 1.4;
+            max-width: 60ch;
+            font-weight: 400;
+        }
+
+        .mono-caption {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            line-height: 1.6;
+        }
+
+        
+        main {
+            display: grid;
+            grid-template-columns: 1fr;
+            width: 100%;
+        }
+
+        section {
+            min-height: 100vh;
+            padding: 4rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        
+        .hero {
+            justify-content: flex-end;
+            align-items: flex-start;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-meta {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            border-top: 2px solid var(--ink);
+            padding-top: 1rem;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        
+        .ink-blob {
+            position: absolute;
+            top: 50%;
+            left: 60%;
+            transform: translate(-50%, -50%);
+            width: 40vw;
+            height: 40vw;
+            background: var(--ink);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            animation: blob-float 10s infinite linear;
+            z-index: 1;
+            filter: url(#paper-roughness); 
+        }
+
+        @keyframes blob-float {
+            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: translate(-50%, -50%) rotate(0deg); }
+            33% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
+            66% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
+            100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        
+        .tools {
+            justify-content: center;
+        }
+
+        .tool-list {
+            list-style: none;
+            width: 100%;
+        }
+
+        .tool-item {
+            border-top: 2px solid var(--ink);
+            padding: 2rem 0;
+            display: grid;
+            grid-template-columns: 1fr 3fr 1fr;
+            align-items: baseline;
+            transition: padding-left 0.3s ease;
+        }
+        
+        .tool-item:last-child {
+            border-bottom: 2px solid var(--ink);
+        }
+
+        .tool-item:hover {
+            background-color: var(--ink);
+            color: var(--bg);
+            padding-left: 2rem;
+        }
+
+        .tool-number {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        .tool-name {
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .tool-desc {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            text-align: right;
+        }
+
+        
+        .download {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--ink);
+            color: var(--bg);
+            padding: 2rem 4rem;
+            font-size: 2rem;
+            font-weight: 700;
+            text-decoration: none;
+            border: 2px solid var(--ink);
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 3rem;
+        }
+
+        .cta-button:hover {
+            background: var(--bg);
+            color: var(--ink);
+            transform: scale(0.98);
+        }
+
+        
+        .stamp {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            width: 100px;
+            height: 100px;
+            border: 1px solid var(--ink);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            animation: spin 10s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        
+        .filters {
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 20vw; }
+            .tool-item { grid-template-columns: 1fr; gap: 1rem; }
+            .tool-desc { text-align: left; }
+            section { padding: 2rem; }
+            .ink-blob { width: 80vw; height: 80vw; left: 50%; }
+        }
+    </style>
+</head>
+<body vid="6">
+
+    
+    <svg class="filters" vid="7">
+        <filter id="paper-roughness" vid="8">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise" vid="9"></feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" vid="10"></feDisplacementMap>
+        </filter>
+    </svg>
+
+    <div id="cursor" vid="11"></div>
+
+    <main vid="12">
+        
+        <section class="hero" vid="13">
+            <div class="ink-blob" vid="14"></div>
+            
+            <div class="hero-content" vid="15">
+                <h1 vid="16">motus</h1>
+                <p vid="17">An algorithmic design suite for Autodesk Revit.<br vid="18">Automate the mundane. Sculpt the complex.</p>
+                
+                <div class="hero-meta" vid="19">
+                    <div vid="20">
+                        <strong vid="21">VERSION</strong><br vid="22">
+                        2.4.0 (Alpha)
+                    </div>
+                    <div vid="23">
+                        <strong vid="24">PLATFORM</strong><br vid="25">
+                        Win64 / Revit 2024
+                    </div>
+                    <div vid="26">
+                        <strong vid="27">STATUS</strong><br vid="28">
+                        Active Development
+                    </div>
+                </div>
+            </div>
+
+            <div class="stamp" vid="29">
+                BIM // AUTO
+            </div>
+        </section>
+
+        
+        <section class="tools" vid="30">
+            <div style="margin-bottom: 4rem;" vid="31">
+                <h2 vid="32">The Toolkit</h2>
+                <p style="font-size: 1.2rem; max-width: 40ch;" vid="33">Native parametric tools designed to bypass UI limitations and interact directly with the API.</p>
+            </div>
+
+            <ul class="tool-list" vid="34">
+                <li class="tool-item" vid="35">
+                    <span class="tool-number" vid="36">01</span>
+                    <span class="tool-name" vid="37">IsoBatch</span>
+                    <span class="tool-desc" vid="38">Mass export views to DWG/PDF without freezing the UI thread.</span>
+                </li>
+                <li class="tool-item" vid="39">
+                    <span class="tool-number" vid="40">02</span>
+                    <span class="tool-name" vid="41">CleanSweep</span>
+                    <span class="tool-desc" vid="42">Purge unused families, regex-based parameter renaming, and model hygiene.</span>
+                </li>
+                <li class="tool-item" vid="43">
+                    <span class="tool-number" vid="44">03</span>
+                    <span class="tool-name" vid="45">TopoGen</span>
+                    <span class="tool-desc" vid="46">Generate topography from CSV point clouds with Delaunay triangulation.</span>
+                </li>
+                <li class="tool-item" vid="47">
+                    <span class="tool-number" vid="48">04</span>
+                    <span class="tool-name" vid="49">RoomLink</span>
+                    <span class="tool-desc" vid="50">Bi-directional Excel sync for room data sheets and finish schedules.</span>
+                </li>
+            </ul>
+        </section>
+
+        
+        <section class="download" vid="51">
+            <div class="ink-blob" style="width: 20vw; height: 20vw; top: 30%; left: 30%; animation-direction: reverse;" vid="52"></div>
+            
+            <div style="position: relative; z-index: 2;" vid="53">
+                <h1 vid="54">deploy</h1>
+                <p vid="55">Open source. MIT License. No subscription fees.</p>
+                <a href="#" class="cta-button" vid="56">Download Installer (.msi)</a>
+                <div class="mono-caption" style="margin-top: 2rem;" vid="57">
+                    SHA-256: 8f4b...3a2c<br vid="58">
+                    Requires .NET Framework 4.8
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script vid="59">
+        
+        const cursor = document.getElementById('cursor');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        
+        const links = document.querySelectorAll('a, .tool-item');
+        links.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(2.5)';
+                cursor.style.mixBlendMode = 'exclusion';
+            });
+            link.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursor.style.mixBlendMode = 'difference';
+            });
+        });
+    </script>
+
+</body></html>

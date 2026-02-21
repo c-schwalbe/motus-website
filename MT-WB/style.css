@@ -1,0 +1,574 @@
+/*
+Theme Name: motus
+Author URI: http://www.motusdigitalmedia.com
+Version: 1.0
+*/
+
+
+/* --- Base Elements --- */
+* {
+    box-sizing: border-box;
+	margin: 0;
+    padding: 0;
+}
+
+:after, :before {
+    -webkit-box-sizing: inherit;
+    box-sizing: inherit;
+}
+
+html {
+	height: 100%;
+	width: 100%;
+	overflow-y: scroll;/* push vertical scroll bar to prevent bounce */
+	font-size: .9em;
+}
+
+html * {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	
+   	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+   	font-weight: 300;
+   	-webkit-font-smoothing: antialiased;
+   	-moz-osx-font-smoothing: grayscale;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+
+}
+
+canvas {
+	z-index: -100;
+    float: left;
+    overflow-x: hidden;
+}
+
+main {
+	padding: 0.78125%;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 100%;
+}
+
+article {
+	padding-bottom: 4.5rem;
+}
+
+h1 {
+    display: block;
+    font-size: 2.34325rem;
+    font-weight: bold;
+	margin-bottom: 4.625rem;
+	color: #000 !important;
+}
+
+h2 {
+    display: block;
+    font-size: 1.562rem;
+    font-weight: bold;
+	padding-bottom: 1.5rem;
+
+}
+
+h3 {
+    display: block;
+    font-size: 1.1rem;   
+	font-weight: bold;
+
+}
+
+p {
+	/*font-family:Georgia, "Times New Roman", Times, serif;*/
+	font-size: 1rem;
+    line-height: 1.8;
+    color: #191e23;
+	margin-bottom: 1rem;
+	max-width: 50rem;
+}
+
+a:link {
+	color: #cf2e2e;
+	text-decoration: underline;
+}
+
+a:visited {
+	color: #cf2e2e;
+}
+
+a:active {
+	color: #000;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+.tools-thumbnail {
+	float: left;
+	padding-right: 1.5rem;
+}
+
+page-title {
+	color: #000;
+}
+
+.mbutton {
+	display: inline-block;
+    padding: 6px 12px;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.428571429;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+/* --- Page Fader --- */
+#loaderOverlay{
+    position: fixed;
+    z-index: 99999;
+    top:0; left:0; right:0; bottom:0;
+    background: #fff;
+    transition: 0.5s;       /* transition timing */
+}
+#loaderOverlay.hide{      /* JS-add this class on DOM ready or window load */
+   visibility: hidden;
+   opacity: 0;
+}
+
+/* --- Wordpress --- */
+.wp-block {
+	margin-top: 32px;
+	margin-bottom: 32px;
+}
+
+.post {
+	padding-bottom: 4rem;
+}
+
+
+
+/* --- The Grid --- */
+/*0.78125 = 1/128*/
+/*1.562 = 1/64*/
+/*2.34325*/
+/*3.125 = 1/32*/ 
+
+[class*="col-"] {
+    float: left;
+	padding: 0.78125%;
+}
+.col-m-1-16 {width: 6.25%;}
+.col-m-2-16 {width: 12.5%;}
+.col-m-3-16 {width: 18.75%;}
+.col-m-4-16 {width: 25%;}
+.col-m-5-16 {width: 31.25%;}
+.col-m-6-16 {width: 37.5%;}
+.col-m-7-16 {width: 43.75%;}
+.col-m-8-16 {width: 50%;}
+.col-m-9-16 {width: 56.25%;}
+.col-m-10-16 {width: 62.5%;}
+.col-m-11-16 {width: 68.75%;}
+.col-m-12-16 {width: 75%;}
+.col-m-13-16 {width: 81.25%;}
+.col-m-14-16 {width: 87.5%;}
+.col-m-15-16 {width: 93.75%;}
+.col-m-16-16 {width: 100%;}
+
+/* theis is for a visual guide */
+.guide-16-grid {
+	padding: 0.78125%;
+	z-index: -9999;
+	position: fixed;
+	width: 100%;
+	top: 0;
+	left: 0;
+	display: none;
+	height: 100%;
+}
+
+.guide-16-grid .col-m-1-16{
+	height: 100%;
+}
+
+.guide-8-grid {
+	padding: 0.78125%;
+	z-index: -9999;
+	position: fixed;
+	width: 100%;
+	top: 0;
+	left: 0;
+	display: block;
+	height: 100%;
+}
+
+.row {
+	margin-bottom: 1px;
+	margin-top:6.25vh;
+}
+
+.row::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+
+
+.guide {
+    text-align: left;
+    font-weight: 100;
+	padding: 0.78125%;
+	outline: dashed thin #f1f1f1;
+	color: #f1f1f1;
+	min-height: 100%;
+}
+
+/* --- Navigation --- */
+.menu-container {
+  height:100%;
+  background-color: rgba(0,0,0,0.8);
+  
+  	padding: 0.78125%;
+    position: fixed;
+	width: 100%;
+	top: 0;
+	left: 0;
+	height: 100%;
+  
+  transition: all 0.5s;
+  left: -100%;/* match to the width  */
+  
+  z-index: 2;
+}
+
+.menu {
+	z-index: 9;
+	text-align: center;
+	position: absolute;
+    display: inline-block;
+    cursor: pointer;
+	list-style-type: none;
+	width: 80%;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+.menu li {
+	
+	margin-bottom: 4.625rem; 
+}
+
+.menu ul li a {
+	color:#FFF;
+}
+.menu ul li a:visited {
+	color:#FFF;
+}
+
+nav {
+}
+
+nav a {
+}
+
+.link {
+  background-color: #333;
+  padding: 20px;
+  font-family: 'Raleway', sans-serif;
+  font-size 12pt;
+  color: #F5F5F5;
+  transition: All .5s linear;
+  border-bottom: 1px solid #F5F5F5;
+}
+
+.link:hover {
+  background-color: #424242;
+}
+
+#check:checked ~ .menu-container{
+  transform: translateX(100%);
+}
+
+#check:checked ~ .content{
+  transform: display(none);
+}
+
+#check {
+  display:none;
+}
+
+#icon {
+  position: fixed;
+  margin-top: 3.25vh;
+  margin-right: 6.25%;
+  right: 0.78125%;
+  display: inline-block;
+  cursor:pointer;
+  z-index: 9;
+  padding: 0.78125%;
+}
+
+#bars {
+}
+
+#clicker {
+	margin: 1rem;
+}
+
+/* bar icon */
+.bar1, .bar2, .bar3 {
+    width: 35px;
+    height: 4.5px;
+    background-color: #000;
+    margin: 8px 0;
+    transition: 0.5s;
+}
+
+a:active {
+	text-decoration: underline;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+/* Rotate first bar icon menu*/
+.change .bar1 {
+  background-color: #FFF;
+  -webkit-transform: rotate(-45deg) translate(-9px, 6px) ;
+  transform: rotate(-45deg) translate(-9px, 9px) ;
+}
+
+/* Fade out the second bar icon menu*/
+.change .bar2 {
+    opacity: 0;
+}
+
+/* Rotate last bar icon menu*/
+.change .bar3 {
+  background-color: #FFF;
+   -webkit-transform: rotate(45deg) translate(-8px, -8px) ;
+   transform: rotate(45deg) translate(-9px, -9px) ;
+}
+
+.change .content {
+	display: none;
+}
+
+/* -------this is where the song ends------------- */
+
+
+
+/* --- Framework --- */
+.site-header {
+	width: 100%;
+}
+
+.title-container a {
+	color: rgba(0, 0, 0, 0.85);
+	text-decoration: none;
+}
+
+.title-container a:active {
+	color: rgba(0, 0, 0, 0.85);
+	text-decoration: none;
+}
+
+.title-container a:visited {
+	color: rgba(0, 0, 0, 0.85);
+	text-decoration: none;
+}
+.title-container a:link {
+	color: rgba(0, 0, 0, 0.85);
+	text-decoration: none;
+}F
+
+.title-container a:hover {
+	text-decoration: underline;
+}
+
+.site-title-home {
+    text-align: left;
+	font-weight: bold;
+	font-size: 5.57vw;
+	padding-top: 7.625vh;
+	margin-bottom: 1.5rem;
+}
+
+
+.site-description {
+	word-break: break-word;
+	margin: 0;
+	font-size: 3.23vw;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+	color: rgba(0, 0, 0, 0.42);
+	text-decoration: none
+}
+
+.the-content a {
+	text-decoration:underline;
+}
+
+.content {
+    float: left;
+    min-height: 100%;
+	padding-left: 0.78125%;
+	padding-right: 0.78125%;
+	display: block;
+}
+
+.support {
+}
+
+
+.site-footer {
+}
+
+
+/* --- Navigation Menus --- */
+
+.menu-item a {
+	color: #FFF;
+	font-size: 2.34325rem;
+    font-weight: bold;
+	text-decoration: none;
+}
+
+.menu-item a:hover {
+	text-decoration: underline;
+}
+
+.current-menu-item  a,
+.current-page-ancestor {
+	text-decoration: underline;
+	color: #FFF;
+}
+
+.children-links .current_page_item a:link,
+.children-links .current-page_item a:visited {
+	text-decoration: underline;
+}
+
+.nextlink {
+	display: block;
+}
+
+/* --- Comments Form --- */
+#respond { 
+padding:4em 0 0 0;
+width: 37.5%;
+}
+ 
+/* Highlight active form field */
+
+#respond input[type=text], textarea {
+  -webkit-transition: all 0.30s ease-in-out;
+  -moz-transition: all 0.30s ease-in-out;
+  -ms-transition: all 0.30s ease-in-out;
+  -o-transition: all 0.30s ease-in-out;
+  outline: none;
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+  border: 1px solid #DDDDDD;
+  width: 100%;
+}
+  
+  
+#respond input[type=text]:focus, textarea:focus {
+  margin: 5px 1px 3px 0px;
+  border: 1px solid rgba(81, 203, 238, 1);
+}
+
+/* --- Contact Form --- */
+input[type="text"],
+input[type="email"]
+{
+    width: 38.55%;
+}
+
+input[type="submit"]
+{
+    background-color: #fff;
+	text-transform: capitalize;
+	padding: 1em 1.618em;
+	border: 1px solid #000;
+	border-radius: 0;
+}
+input[type="submit"]:hover {
+	background-color:#000;
+	color:#FFF;
+}
+
+
+/* EDD overides */
+.edd_cp_price {
+	width: 12.5rem;
+	margin: 0.78125rem;
+}
+
+.edd_download_purchase_form .edd_price_options li {
+	margin-bottom: 2rem;
+}
+
+.edd_price_option_sep {
+	/*display: none !important;*/
+}
+
+.edd_price_option_price {
+	/*padding-left: 32px !important;*/
+}
+
+@media print {
+	.noprint, .noprint *
+	{ 
+		display: none !important;
+	}
+}
+
+/* --Orientation changes -- */
+@media (orientation:portrait) {
+}
+
+/* For large displays: */
+@media only screen and (min-width: 1800px) {
+	}
+	.guide-16-grid {
+		display: block;
+	}
+	.guide-8-grid {
+		display: none;
+	}
+}
+
+/* For tablets in portrait: */
+@media only screen 
+  and (max-device-width: 775px) 
+  and (orientation: portrait)
+  and (-webkit-min-device-pixel-ratio: 1) {
+}
+
+/* For mobile phones: */
+@media only screen and (max-width: 500px) {
+}
+
+

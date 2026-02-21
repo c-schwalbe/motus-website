@@ -14,7 +14,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            cursor: none; 
+            cursor: none;
         }
 
         body {
@@ -31,20 +31,21 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 20px;
-            height: 20px;
+            width: 12px;
+            height: 12px;
             background: var(--ink);
             border-radius: 50%;
             pointer-events: none;
-            mix-blend-mode: difference;
             z-index: 9999;
             transform: translate(-50%, -50%);
-            transition: width 0.2s, height 0.2s;
+            transition: width 0.15s ease, height 0.15s ease, border-radius 0.15s ease;
         }
 
-        body:hover #cursor {
-            width: 40px;
-            height: 40px;
+        #cursor.expanded {
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border: 1.5px solid var(--ink);
         }
 
         
@@ -121,26 +122,7 @@
         }
 
         
-        .ink-blob {
-            position: absolute;
-            top: 50%;
-            left: 60%;
-            transform: translate(-50%, -50%);
-            width: 40vw;
-            height: 40vw;
-            background: var(--ink);
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            animation: blob-float 10s infinite linear;
-            z-index: 1;
-            filter: url(#paper-roughness); 
-        }
 
-        @keyframes blob-float {
-            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: translate(-50%, -50%) rotate(0deg); }
-            33% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
-            66% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
-            100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: translate(-50%, -50%) rotate(360deg); }
-        }
 
         
         .tools {
@@ -264,12 +246,13 @@
         </filter>
     </svg>
 
-    <div id="cursor" vid="11"></div>
+    <canvas id="dot-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;" vid="11"></canvas>
+    <div id="cursor" vid="12"></div>
 
-    <main vid="12">
+    <main vid="13">
         
-        <section class="hero" vid="13">
-            <div class="ink-blob" vid="14"></div>
+        <section class="hero" vid="14">
+
             
             <div class="hero-content" vid="15">
                 <h1 vid="16">motus</h1>
@@ -329,22 +312,92 @@
 
         
         <section class="download" vid="51">
-            <div class="ink-blob" style="width: 20vw; height: 20vw; top: 30%; left: 30%; animation-direction: reverse;" vid="52"></div>
+
             
-            <div style="position: relative; z-index: 2;" vid="53">
-                <h1 vid="54">deploy</h1>
-                <p vid="55">Open source. MIT License. No subscription fees.</p>
-                <a href="#" class="cta-button" vid="56">Download Installer (.msi)</a>
-                <div class="mono-caption" style="margin-top: 2rem;" vid="57">
-                    SHA-256: 8f4b...3a2c<br vid="58">
+            <div style="position: relative; z-index: 2;" vid="52">
+                <h1 vid="53">deploy</h1>
+                <p vid="54">Open source. MIT License. No subscription fees.</p>
+                <a href="#" class="cta-button" vid="55">Download Installer (.msi)</a>
+                <div class="mono-caption" style="margin-top: 2rem;" vid="56">
+                    SHA-256: 8f4b...3a2c<br vid="57">
                     Requires .NET Framework 4.8
                 </div>
             </div>
         </section>
     </main>
 
+    <script vid="58">
+        // Connecting dots background
+        (function() {
+            const canvas = document.getElementById('dot-canvas');
+            const ctx = canvas.getContext('2d');
+            const NUM_DOTS = 80;
+            const MAX_DIST = 160;
+            let dots = [];
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            for (let i = 0; i < NUM_DOTS; i++) {
+                dots.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    r: Math.random() * 2 + 1
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Move dots
+                dots.forEach(d => {
+                    d.x += d.vx;
+                    d.y += d.vy;
+                    if (d.x < 0 || d.x > canvas.width)  d.vx *= -1;
+                    if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
+                });
+
+                // Draw lines
+                for (let i = 0; i < dots.length; i++) {
+                    for (let j = i + 1; j < dots.length; j++) {
+                        const dx = dots[i].x - dots[j].x;
+                        const dy = dots[i].y - dots[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < MAX_DIST) {
+                            const alpha = (1 - dist / MAX_DIST) * 0.18;
+                            ctx.strokeStyle = `rgba(0,0,0,${alpha})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.beginPath();
+                            ctx.moveTo(dots[i].x, dots[i].y);
+                            ctx.lineTo(dots[j].x, dots[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Draw dots
+                dots.forEach(d => {
+                    ctx.beginPath();
+                    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+                    ctx.fill();
+                });
+
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+    </script>
     <script vid="59">
         
+
+
         const cursor = document.getElementById('cursor');
         
         document.addEventListener('mousemove', (e) => {

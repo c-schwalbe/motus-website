@@ -33,19 +33,20 @@
             left: 0;
             width: 12px;
             height: 12px;
-            background: var(--ink);
+            background: rgba(0,0,0,0.25);
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
             transform: translate(-50%, -50%);
-            transition: width 0.15s ease, height 0.15s ease, border-radius 0.15s ease;
+            mix-blend-mode: normal;
+            transition: width 0.15s ease, height 0.15s ease, border-radius 0.15s ease, background 0.15s ease;
         }
 
         #cursor.expanded {
             width: 36px;
             height: 36px;
             background: transparent;
-            border: 1.5px solid var(--ink);
+            border: 2px solid rgba(0,0,0,0.25);
         }
 
         
@@ -151,6 +152,12 @@
             background-color: var(--ink);
             color: var(--bg);
             padding-left: 2rem;
+        }
+
+        .tool-item:hover .tool-number,
+        .tool-item:hover .tool-name,
+        .tool-item:hover .tool-desc {
+            color: var(--bg);
         }
 
         .tool-number {
@@ -410,11 +417,13 @@
         links.forEach(link => {
             link.addEventListener('mouseenter', () => {
                 cursor.style.transform = 'translate(-50%, -50%) scale(2.5)';
+                cursor.style.background = '#ffffff';
                 cursor.style.mixBlendMode = 'exclusion';
             });
             link.addEventListener('mouseleave', () => {
                 cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-                cursor.style.mixBlendMode = 'difference';
+                cursor.style.background = 'rgba(0,0,0,0.25)';
+                cursor.style.mixBlendMode = 'normal';
             });
         });
     </script>

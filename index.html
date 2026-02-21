@@ -1,8 +1,8 @@
-<html lang="en" vid="0"><head vid="1">
-    <meta charset="UTF-8" vid="2">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
-    <title vid="4">motus | revit automation suite</title>
-    <style vid="5">
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>motus | revit automation suite</title>
+    <style>
         :root {
             --bg: #ffffff;
             --ink: #000000;
@@ -243,97 +243,158 @@
         }
     </style>
 </head>
-<body vid="6">
+<body>
 
     
-    <svg class="filters" vid="7">
-        <filter id="paper-roughness" vid="8">
-            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise" vid="9"></feTurbulence>
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" vid="10"></feDisplacementMap>
+    <svg class="filters">
+        <filter id="paper-roughness">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"></feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="15"></feDisplacementMap>
         </filter>
     </svg>
 
-    <canvas id="dot-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;" vid="11"></canvas>
-    <div id="cursor" vid="12"></div>
+    <canvas id="dot-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+    <div id="cursor"></div>
 
-    <main vid="13">
+    <main>
         
-        <section class="hero" vid="14">
+        <section class="hero">
 
             
-            <div class="hero-content" vid="15">
-                <h1 vid="16">motus</h1>
-                <p vid="17">An algorithmic design suite for Autodesk Revit.<br vid="18">Automate the mundane. Sculpt the complex.</p>
+            <div class="hero-content">
+                <h1>motus</h1>
+                <p>Automate the mundane. Increase functionality.</p>
                 
-                <div class="hero-meta" vid="19">
-                    <div vid="20">
-                        <strong vid="21">VERSION</strong><br vid="22">
-                        2.4.0 (Alpha)
+                <div class="hero-meta">
+                    <div>
+                        <strong>
+                        2.6.0 (Alpha)
                     </div>
-                    <div vid="23">
-                        <strong vid="24">PLATFORM</strong><br vid="25">
-                        Win64 / Revit 2024
+                    <div>
+                        <strong>
+                        Win64 / Revit 2026
                     </div>
-                    <div vid="26">
-                        <strong vid="27">STATUS</strong><br vid="28">
+                    <div>
+                        <strong>
                         Active Development
                     </div>
                 </div>
             </div>
 
-            <div class="stamp" vid="29">
+            <div class="stamp">
                 BIM // AUTO
             </div>
         </section>
 
         
-        <section class="tools" vid="30">
-            <div style="margin-bottom: 4rem;" vid="31">
-                <h2 vid="32">The Toolkit</h2>
-                <p style="font-size: 1.2rem; max-width: 40ch;" vid="33">Native parametric tools designed to bypass UI limitations and interact directly with the API.</p>
+        <section class="tools">
+            <div style="margin-bottom: 4rem;">
+                <h2>The Toolkit</h2>
+                <p style="font-size: 1.2rem; max-width: 40ch;">Native parametric tools designed to bypass UI limitations and interact directly with the API.</p>
             </div>
 
-            <ul class="tool-list" vid="34">
-                <li class="tool-item" vid="35">
-                    <span class="tool-number" vid="36">01</span>
-                    <span class="tool-name" vid="37">IsoBatch</span>
-                    <span class="tool-desc" vid="38">Mass export views to DWG/PDF without freezing the UI thread.</span>
+            <ul class="tool-list">
+                <li class="tool-item">
+                    <span class="tool-number">01</span>
+                    <span class="tool-name">IsolateWarnings</span>
+                    <span class="tool-desc">One click tool to isolate / unisolate the view to show all elements containing a warning.</span>
                 </li>
-                <li class="tool-item" vid="39">
-                    <span class="tool-number" vid="40">02</span>
-                    <span class="tool-name" vid="41">CleanSweep</span>
-                    <span class="tool-desc" vid="42">Purge unused families, regex-based parameter renaming, and model hygiene.</span>
+                <li class="tool-item">
+                    <span class="tool-number">02</span>
+                    <span class="tool-name">CleanViews</span>
+                    <span class="tool-desc">Easily remove orphaned elevation tags.</span>
                 </li>
-                <li class="tool-item" vid="43">
-                    <span class="tool-number" vid="44">03</span>
-                    <span class="tool-name" vid="45">TopoGen</span>
-                    <span class="tool-desc" vid="46">Generate topography from CSV point clouds with Delaunay triangulation.</span>
+                <li class="tool-item">
+                    <span class="tool-number">03</span>
+                    <span class="tool-name">MegaPurge</span>
+                    <span class="tool-desc">Purge elements such as Views, Sheets, Links, CAD, and Raster Images that the built-in purge does not .</span>
                 </li>
-                <li class="tool-item" vid="47">
-                    <span class="tool-number" vid="48">04</span>
-                    <span class="tool-name" vid="49">RoomLink</span>
-                    <span class="tool-desc" vid="50">Bi-directional Excel sync for room data sheets and finish schedules.</span>
+                <li class="tool-item">
+                    <span class="tool-number">04</span>
+                    <span class="tool-name">DuplicateSheet</span>
+                    <span class="tool-desc">Bi-directional Excel sync for room data sheets and finish schedules.</span>
                 </li>
+                <li class="tool-item">
+                    <span class="tool-number">05</span>
+                    <span class="tool-name">CapitalizeNames</span>
+                    <span class="tool-desc">Capitalize all view names that have been placed on a sheet.</span>
+                </li>
+                <li class="tool-item">
+                    <span class="tool-number">06</span>
+                    <span class="tool-name">ElevateRoom</span>
+                    <span class="tool-desc">Automatically create 4 interior elevations for selected rooms.</span>
+                </li>
+                <li class="tool-item">
+                    <span class="tool-number">07</span>
+                    <span class="tool-name">ViewDirection</span>
+                    <span class="tool-desc">Change the neame of views to match their orientation to the cardinal points of the project.</span>
+                </li>
+                <li class="tool-item">
+                    <span class="tool-number">09</span>
+                    <span class="tool-name">NumberByClick</span>
+                    <span class="tool-desc">Renumber problematic elements such as gridlines by clicking on or selecting them in sequence.</span>
+                </li>
+                <li class="tool-item">
+                    <span class="tool-number">10</span>
+                    <span class="tool-name">DoorNumber</span>
+                    <span class="tool-desc">Automatically renumber the doors based on their association to rooms and room numbers.</span>
+                </li>
+                <li class="tool-item">
+                    <span class="tool-number">11</span>
+                    <span class="tool-name">WindowNumber</span>
+                    <span class="tool-desc">Automatically renumber the windows based on their association to rooms and room numbers.</span>
+                </li>
+                <li class="tool-item">
+                    <span class="tool-number">12</span>
+                    <span class="tool-name">Sum</span>
+                    <span class="tool-desc">Add together the length of multiple selected lines or the area of multiple selected filled regions.</span>
+                </li>
+                <li class="tool-item">
+                    <span class="tool-number">13</span>
+                    <span class="tool-name">RoomFinish</span>
+                    <span class="tool-desc">Automatically add finish walls to selected rooms with inputs for height and wall type.</span>
+                </li>
+                <li class="tool-item">
+                    <span class="tool-number">14</span>
+                    <span class="tool-name">LevelRt / LevelLt</span>
+                    <span class="tool-desc">Filp the heads of levels to match either all left or all right.</span>
+                </li>
+                <li class="tool-item">
+                    <span class="tool-number">15</span>
+                    <span class="tool-name">LoadDirectory</span>
+                    <span class="tool-desc">Load all .rfa files in a file, includeing subfiles.</span>
+                </li>
+                <li class="tool-item">
+                    <span class="tool-number">16</span>
+                    <span class="tool-name">RandomRotateTrees</span>
+                    <span class="tool-desc">Rotate all of the planting elements in the file randomly.</span>
+                </li>
+                <li class="tool-item">
+                    <span class="tool-number">17</span>
+                    <span class="tool-name">DimensionGrids</span>
+                    <span class="tool-desc">Add overall and intermittent dimensions for all parallel grids in view.</span>
+                </li>
+
             </ul>
         </section>
 
         
-        <section class="download" vid="51">
+        <section class="download">
 
             
-            <div style="position: relative; z-index: 2;" vid="52">
-                <h1 vid="53">deploy</h1>
-                <p vid="54">Open source. MIT License. No subscription fees.</p>
-                <a href="#" class="cta-button" vid="55">Download Installer (.msi)</a>
-                <div class="mono-caption" style="margin-top: 2rem;" vid="56">
-                    SHA-256: 8f4b...3a2c<br vid="57">
-                    Requires .NET Framework 4.8
+            <div style="position: relative; z-index: 2;">
+                <h1>deploy</h1>
+                <p>Open source. MIT License. No subscription fees.</p>
+                <a href="#" class="cta-button">Download Installer (.msi)</a>
+                <div class="mono-caption" style="margin-top: 2rem;">
+                    SHA-256: 8f4b...3a2c<br>
+                    Requires .NET Framework 8
                 </div>
             </div>
         </section>
     </main>
 
-    <script vid="58">
+    <script>
         // Connecting dots background
         (function() {
             const canvas = document.getElementById('dot-canvas');
@@ -366,8 +427,8 @@
                 dots.forEach(d => {
                     d.x += d.vx;
                     d.y += d.vy;
-                    if (d.x < 0 || d.x > canvas.width)  d.vx *= -1;
-                    if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
+                    if (d.x < 0 || d.x> canvas.width)  d.vx *= -1;
+                    if (d.y < 0 || d.y> canvas.height) d.vy *= -1;
                 });
 
                 // Draw lines
@@ -401,7 +462,7 @@
             draw();
         })();
     </script>
-    <script vid="59">
+    <script>
         
 
 

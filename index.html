@@ -1,531 +1,533 @@
-<html lang="en" vid="0"><head vid="1">
-    <meta charset="UTF-8" vid="2">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
-    <title vid="4">motus | revit automation suite</title>
-    <style vid="5">
-        :root {
-            --bg: #ffffff;
-            --ink: #000000;
-            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            --font-mono: 'Courier New', Courier, monospace;
-        }
+<html lang="en" vid="0">
+    <head vid="1">
+        <meta charset="UTF-8" vid="2">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
+        <title vid="4">motus | revit automation suite</title>
+        <style vid="5">
+            :root {
+                --bg: #ffffff;
+                --ink: #000000;
+                --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                --font-mono: 'Courier New', Courier, monospace;
+            }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            cursor: none;
-        }
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                cursor: none;
+            }
 
-        body {
-            background-color: var(--bg);
-            color: var(--ink);
-            font-family: var(--font-main);
-            overflow-x: hidden;
-            width: 100vw;
-            min-height: 100vh;
-        }
+            body {
+                background-color: var(--bg);
+                color: var(--ink);
+                font-family: var(--font-main);
+                overflow-x: hidden;
+                width: 100vw;
+                min-height: 100vh;
+            }
 
-        
-        #cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 24px;
-            height: 24px;
-            background: rgba(0,0,0,0.25);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            mix-blend-mode: normal;
-            transition: width 0.15s ease, height 0.15s ease, border-radius 0.15s ease, background 0.15s ease;
-        }
+            
+            #cursor {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 24px;
+                height: 24px;
+                background: rgba(0,0,0,0.25);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 9999;
+                transform: translate(-50%, -50%);
+                mix-blend-mode: normal;
+                transition: width 0.15s ease, height 0.15s ease, border-radius 0.15s ease, background 0.15s ease;
+            }
 
-        #cursor.expanded {
-            background: transparent;
-            border: 2px solid rgba(0,0,0,0.25);
-        }
+            #cursor.expanded {
+                background: transparent;
+                border: 2px solid rgba(0,0,0,0.25);
+            }
 
-        
-        h1 {
-            font-size: clamp(4rem, 15vw, 12rem);
-            font-weight: 900;
-            letter-spacing: -0.05em;
-            line-height: 0.8;
-            text-transform: lowercase;
-            margin-bottom: 2rem;
-        }
+            
+            h1 {
+                font-size: clamp(4rem, 15vw, 12rem);
+                font-weight: 900;
+                letter-spacing: -0.05em;
+                line-height: 0.8;
+                text-transform: lowercase;
+                margin-bottom: 2rem;
+            }
 
-        h2 {
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--ink);
-            padding-bottom: 0.5rem;
-            display: inline-block;
-        }
+            h2 {
+                font-family: var(--font-mono);
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                margin-bottom: 1rem;
+                border-bottom: 1px solid var(--ink);
+                padding-bottom: 0.5rem;
+                display: inline-block;
+            }
 
-        p {
-            font-size: 1.5rem;
-            line-height: 1.4;
-            max-width: 60ch;
-            font-weight: 400;
-        }
+            p {
+                font-size: 1.5rem;
+                line-height: 1.4;
+                max-width: 60ch;
+                font-weight: 400;
+            }
 
-        .mono-caption {
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            line-height: 1.6;
-        }
+            .mono-caption {
+                font-family: var(--font-mono);
+                font-size: 0.75rem;
+                line-height: 1.6;
+            }
 
-        
-        main {
-            display: grid;
-            grid-template-columns: 1fr;
-            width: 100%;
-        }
+            
+            main {
+                display: grid;
+                grid-template-columns: 1fr;
+                width: 100%;
+            }
 
-        section {
-            min-height: 100vh;
-            padding: 4rem;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
+            section {
+                min-height: 100vh;
+                padding: 4rem;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+            }
 
-        
-        .hero {
-            justify-content: flex-end;
-            align-items: flex-start;
-        }
+            
+            .hero {
+                justify-content: flex-end;
+                align-items: flex-start;
+            }
 
-        .hero-content {
-            position: relative;
-            z-index: 2;
-        }
+            .hero-content {
+                position: relative;
+                z-index: 2;
+            }
 
-        .hero-meta {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin-top: 4rem;
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            border-top: 2px solid var(--ink);
-            padding-top: 1rem;
-            width: 100%;
-            max-width: 800px;
-        }
+            .hero-meta {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+                margin-top: 4rem;
+                font-family: var(--font-mono);
+                font-size: 0.8rem;
+                border-top: 2px solid var(--ink);
+                padding-top: 1rem;
+                width: 100%;
+                max-width: 800px;
+            }
 
-        
+            
 
 
-        
-        .tools {
-            justify-content: center;
-        }
+            
+            .tools {
+                justify-content: center;
+            }
 
-        .tool-list {
-            list-style: none;
-            width: 100%;
-        }
+            .tool-list {
+                list-style: none;
+                width: 100%;
+            }
 
-        .tool-item {
-            border-top: 2px solid var(--ink);
-            padding: 2rem 0;
-            display: grid;
-            grid-template-columns: 1fr 3fr 1fr;
-            align-items: baseline;
-            transition: padding-left 0.3s ease;
-        }
-        
-        .tool-item:last-child {
-            border-bottom: 2px solid var(--ink);
-        }
+            .tool-item {
+                border-top: 2px solid var(--ink);
+                padding: 2rem 0;
+                display: grid;
+                grid-template-columns: 1fr 3fr 1fr;
+                align-items: baseline;
+                transition: padding-left 0.3s ease;
+            }
+            
+            .tool-item:last-child {
+                border-bottom: 2px solid var(--ink);
+            }
 
-        .tool-item:hover {
-            background-color: var(--ink);
-            color: var(--bg);
-            padding-left: 2rem;
-        }
+            .tool-item:hover {
+                background-color: var(--ink);
+                color: var(--bg);
+                padding-left: 2rem;
+            }
 
-        .tool-item:hover .tool-number,
-        .tool-item:hover .tool-name,
-        .tool-item:hover .tool-desc {
-            color: var(--bg);
-        }
+            .tool-item:hover .tool-number,
+            .tool-item:hover .tool-name,
+            .tool-item:hover .tool-desc {
+                color: var(--bg);
+            }
 
-        .tool-item:hover img{
-            filter: invert(100%);
-        }
+            .tool-item:hover img{
+                filter: invert(100%);
+            }
 
-        .tool-number {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-        }
+            .tool-number {
+                font-family: var(--font-mono);
+                font-size: 0.8rem;
+            }
 
-        .tool-name {
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            font-size: 1.6rem;
-        }
+            .tool-name {
+                font-size: 1.8rem;
+                font-weight: 700;
+                letter-spacing: -0.02em;
+                font-size: 1.6rem;
+            }
 
-        .tool-name img {
-            padding-right: 2rem;
-            min-width: 4rem;
-            max-width: 4rem;
-            margin-bottom: -0.5rem;
-        }
+            .tool-name img {
+                padding-right: 2rem;
+                min-width: 4rem;
+                max-width: 4rem;
+                margin-bottom: -0.5rem;
+            }
 
-        
+            
 
-        .tool-desc {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            text-align: right;
-        }
+            .tool-desc {
+                font-family: var(--font-mono);
+                font-size: 0.8rem;
+                text-align: right;
+            }
 
-        
-        .download {
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
+            
+            .download {
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+            }
 
-        .cta-button {
-            display: inline-block;
-            background: var(--ink);
-            color: var(--bg);
-            padding: 2rem 4rem;
-            font-size: 2rem;
-            font-weight: 700;
-            text-decoration: none;
-            border: 2px solid var(--ink);
-            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-            position: relative;
-            overflow: hidden;
-            margin-top: 3rem;
-        }
+            .cta-button {
+                display: inline-block;
+                background: var(--ink);
+                color: var(--bg);
+                padding: 2rem 4rem;
+                font-size: 2rem;
+                font-weight: 700;
+                text-decoration: none;
+                border: 2px solid var(--ink);
+                transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+                position: relative;
+                overflow: hidden;
+                margin-top: 3rem;
+            }
 
-        .cta-button:hover {
-            background: var(--bg);
-            color: var(--ink);
-            transform: scale(0.98);
-        }
+            .cta-button:hover {
+                background: var(--bg);
+                color: var(--ink);
+                transform: scale(0.98);
+            }
 
-        
-        .stamp {
-            position: absolute;
-            bottom: 4rem;
-            right: 4rem;
-            width: 100px;
-            height: 100px;
-            border: 1px solid var(--ink);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            animation: spin 10s linear infinite;
-        }
+            
+            .stamp {
+                position: absolute;
+                bottom: 4rem;
+                right: 4rem;
+                width: 100px;
+                height: 100px;
+                border: 1px solid var(--ink);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: var(--font-mono);
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                animation: spin 10s linear infinite;
+            }
 
-        .footer {
-            width: 100vw;
-        }
+            .footer {
+                width: 100vw;
+            }
 
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
+            @keyframes spin {
+                100% { transform: rotate(360deg); }
+            }
 
-        
-        .filters {
-            position: absolute;
-            width: 0;
-            height: 0;
-        }
+            
+            .filters {
+                position: absolute;
+                width: 0;
+                height: 0;
+            }
 
-        @media (max-width: 768px) {
-            h1 { font-size: 20vw; }
-            .tool-item { grid-template-columns: 1fr; gap: 1rem; }
-            .tool-desc { text-align: left; }
-            section { padding: 2rem; }
-            .ink-blob { width: 80vw; height: 80vw; left: 50%; }
-            .stamp { right: 2rem; bottom: 2rem; }
-            .stamp { display: none;}
-        }
-    </style>
+            @media (max-width: 768px) {
+                h1 { font-size: 20vw; }
+                .tool-item { grid-template-columns: 1fr; gap: 1rem; }
+                .tool-desc { text-align: left; }
+                section { padding: 2rem; }
+                .ink-blob { width: 80vw; height: 80vw; left: 50%; }
+                .stamp { right: 2rem; bottom: 2rem; }
+                .stamp { display: none;}
+            }
+        </style>
 
-    <script
-        src="https://analytics.manaiakalani.info/api/script.js"
-        data-site-id="744d43be254d"
-        defer
-    ></script>
+        <script
+            src="https://analytics.manaiakalani.info/api/script.js"
+            data-site-id="744d43be254d"
+            defer
+        ></script>
 
-</head>
-<body vid="6">
-
+    </head>
     
-    <svg class="filters" vid="7">
-        <filter id="paper-roughness" vid="8">
-            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise" vid="9"></feTurbulence>
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" vid="10"></feDisplacementMap>
-        </filter>
-    </svg>
+    <body vid="6">
 
-    <div id="cursor" vid="12"></div>
-
-    <main vid="13">
         
-        <section class="hero" vid="14">
-            <div class="hero-content" vid="15">
-                <h1 vid="16">motus</h1>
-                <p vid="17">An algorithmic design suite for Autodesk Revit.<br vid="18">Automate the mundane. Save time.</p>
-                
-                <div class="hero-meta" vid="19">
-                    <div vid="20">
-                        <strong vid="21">VERSION</strong><br vid="22">
-                        2.6.0 (Alpha)
-                    </div>
-                    <div vid="23">
-                        <strong vid="24">PLATFORM</strong><br vid="25">
-                        Win64 / Revit 2026
-                    </div>
-                    <div vid="26">
-                        <strong vid="27">STATUS</strong><br vid="28">
-                        Active Development
+        <svg class="filters" vid="7">
+            <filter id="paper-roughness" vid="8">
+                <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise" vid="9"></feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" vid="10"></feDisplacementMap>
+            </filter>
+        </svg>
+
+        <div id="cursor" vid="12"></div>
+
+        <main vid="13">
+            
+            <section class="hero" vid="14">
+                <div class="hero-content" vid="15">
+                    <h1 vid="16">motus</h1>
+                    <p vid="17">An algorithmic design suite for Autodesk Revit.<br vid="18">Automate the mundane. Save time.</p>
+                    
+                    <div class="hero-meta" vid="19">
+                        <div vid="20">
+                            <strong vid="21">VERSION</strong><br vid="22">
+                            2.6.0 (Alpha)
+                        </div>
+                        <div vid="23">
+                            <strong vid="24">PLATFORM</strong><br vid="25">
+                            Win64 / Revit 2026
+                        </div>
+                        <div vid="26">
+                            <strong vid="27">STATUS</strong><br vid="28">
+                            Active Development
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="stamp" vid="29">
-                BIM // AUTO
-            </div>
-        </section>
-
-        
-        <section class="tools" vid="30">
-            <div style="margin-bottom: 4rem;" vid="31">
-                <h2 vid="32">The Toolkit</h2>
-                <p style="font-size: 1.2rem; max-width: 40ch;" vid="33">A set of tools designed to bypass UI limitations and interact directly with the API packaged into a toolbar available in the motus tab in Revit.</p>
-            </div>
-
-            <ul class="tool-list" vid="34">
-                <li class="tool-item">
-                    <span class="tool-number">01</span>
-                    <span class="tool-name"><img src="/Icons/IsolateWarnings.png" alt="Isolate warnings">IsolateWarnings</span>
-                    <span class="tool-desc">One click tool to isolate / un-isolate the view to show all elements containing a warning.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">02</span>
-                    <span class="tool-name"><img src="/Icons/CleanUnused.png" alt="Remove unused elevations">CleanViews</span>
-                    <span class="tool-desc">Easily remove orphaned elevation tags.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">03</span>
-                    <span class="tool-name"><img src="/Icons/PurgePlus.png" alt="Purge additional elements">MegaPurge</span>
-                    <span class="tool-desc">Purge elements such as Views, Sheets, Links, CAD, and Raster Images that the built-in purge does not .</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">04</span>
-                    <span class="tool-name"><img src="/Icons/DuplicateSheet.png" alt="Create multiple duplicates of a sheet">DuplicateSheet</span>
-                    <span class="tool-desc">Bi-directional Excel sync for room data sheets and finish schedules.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">05</span>
-                    <span class="tool-name"><img src="/Icons/Capitalize.png" alt="Capitalize the names of views on sheets">CapitalizeNames</span>
-                    <span class="tool-desc">Capitalize all view names that have been placed on a sheet.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">06</span>
-                    <span class="tool-name"><img src="/Icons/InteriorElevation.png" alt="Elevate a room">ElevateRoom</span>
-                    <span class="tool-desc">Automatically create 4 interior elevations for selected rooms.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">07</span>
-                    <span class="tool-name"><img src="/Icons/ViewDirection.png" alt="Rename elevations by project cardinal directions">ViewDirection</span>
-                    <span class="tool-desc">Change the neame of views to match their orientation to the cardinal points of the project.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">09</span>
-                    <span class="tool-name"><img src="/Icons/ReNumber.png" alt="Renumber elements by selection order">NumberByClick</span>
-                    <span class="tool-desc">Renumber problematic elements such as grid-lines by clicking on or selecting them in sequence.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">10</span>
-                    <span class="tool-name"><img src="/Icons/DoorNumber.png" alt="Number doors by room">DoorNumber</span>
-                    <span class="tool-desc">Automatically renumber the doors based on their association to rooms and room numbers.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">11</span>
-                    <span class="tool-name"><img src="/Icons/WindowNumber.png" alt="Number windows by room">WindowNumber</span>
-                    <span class="tool-desc">Automatically renumber the windows based on their association to rooms and room numbers.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">12</span>
-                    <span class="tool-name"><img src="/Icons/Sum.png" alt="Sum of lines and areas">Sum</span>
-                    <span class="tool-desc">Add together the length of multiple selected lines or the area of multiple selected filled regions.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">13</span>
-                    <span class="tool-name"><img src="/Icons/RoomFinish.png" alt="add finish walls to room">RoomFinish</span>
-                    <span class="tool-desc">Automatically add finish walls to selected rooms with inputs for height and wall type.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">14</span>
-                    <span class="tool-name"><img src="/Icons/GridBubbleLeft.png" alt="Unify grid bubble orientations">LevelRt / LevelLt</span>
-                    <span class="tool-desc">Filp the heads of levels to match either all left or all right.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">15</span>
-                    <span class="tool-name"><img src="/Icons/ImportDirectory.png" alt="Load multiple families">LoadDirectory</span>
-                    <span class="tool-desc">Load all .rfa files in a file, including subfiles.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">16</span>
-                    <span class="tool-name"><img src="/Icons/RotateTrees.png" alt="Randomly rotate trees">RandomRotateTrees</span>
-                    <span class="tool-desc">Rotate all of the planting elements in the file randomly.</span>
-                </li>
-                <li class="tool-item">
-                    <span class="tool-number">17</span>
-                    <span class="tool-name"><img src="/Icons/DimensionGrids.png" alt="Dimension parallel grids">DimensionGrids</span>
-                    <span class="tool-desc">Add overall and intermittent dimensions for all parallel grids in view.</span>
-                </li>
-            </ul>
-        </section>
-
-        
-        <section class="download" vid="51">
-            <div style="position: relative; z-index: 2;" vid="52">
-                <h1 vid="53">deploy</h1>
-                <p vid="54">Open source. MIT License. No subscription fees.</p>
-                <a href="/Installations/motusTools2026.msi" class="cta-button" vid="55">Download Installer (.msi)</a>
-                <div class="mono-caption" style="margin-top: 2rem;" vid="56">
-                    Revit 2026.1<br vid="57">
-                    Requires .NET Framework 8
+                <div class="stamp" vid="29">
+                    BIM // AUTO
                 </div>
+            </section>
+
+            
+            <section class="tools" vid="30">
+                <div style="margin-bottom: 4rem;" vid="31">
+                    <h2 vid="32">The Toolkit</h2>
+                    <p style="font-size: 1.2rem; max-width: 40ch;" vid="33">A set of tools designed to bypass UI limitations and interact directly with the API packaged into a toolbar available in the motus tab in Revit.</p>
+                </div>
+
+                <ul class="tool-list" vid="34">
+                    <li class="tool-item">
+                        <span class="tool-number">01</span>
+                        <span class="tool-name"><img src="/Icons/IsolateWarnings.png" alt="Isolate warnings">IsolateWarnings</span>
+                        <span class="tool-desc">One click tool to isolate / un-isolate the view to show all elements containing a warning.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">02</span>
+                        <span class="tool-name"><img src="/Icons/CleanUnused.png" alt="Remove unused elevations">CleanViews</span>
+                        <span class="tool-desc">Easily remove orphaned elevation tags.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">03</span>
+                        <span class="tool-name"><img src="/Icons/PurgePlus.png" alt="Purge additional elements">MegaPurge</span>
+                        <span class="tool-desc">Purge elements such as Views, Sheets, Links, CAD, and Raster Images that the built-in purge does not .</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">04</span>
+                        <span class="tool-name"><img src="/Icons/DuplicateSheet.png" alt="Create multiple duplicates of a sheet">DuplicateSheet</span>
+                        <span class="tool-desc">Bi-directional Excel sync for room data sheets and finish schedules.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">05</span>
+                        <span class="tool-name"><img src="/Icons/Capitalize.png" alt="Capitalize the names of views on sheets">CapitalizeNames</span>
+                        <span class="tool-desc">Capitalize all view names that have been placed on a sheet.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">06</span>
+                        <span class="tool-name"><img src="/Icons/InteriorElevation.png" alt="Elevate a room">ElevateRoom</span>
+                        <span class="tool-desc">Automatically create 4 interior elevations for selected rooms.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">07</span>
+                        <span class="tool-name"><img src="/Icons/ViewDirection.png" alt="Rename elevations by project cardinal directions">ViewDirection</span>
+                        <span class="tool-desc">Change the neame of views to match their orientation to the cardinal points of the project.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">09</span>
+                        <span class="tool-name"><img src="/Icons/ReNumber.png" alt="Renumber elements by selection order">NumberByClick</span>
+                        <span class="tool-desc">Renumber problematic elements such as grid-lines by clicking on or selecting them in sequence.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">10</span>
+                        <span class="tool-name"><img src="/Icons/DoorNumber.png" alt="Number doors by room">DoorNumber</span>
+                        <span class="tool-desc">Automatically renumber the doors based on their association to rooms and room numbers.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">11</span>
+                        <span class="tool-name"><img src="/Icons/WindowNumber.png" alt="Number windows by room">WindowNumber</span>
+                        <span class="tool-desc">Automatically renumber the windows based on their association to rooms and room numbers.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">12</span>
+                        <span class="tool-name"><img src="/Icons/Sum.png" alt="Sum of lines and areas">Sum</span>
+                        <span class="tool-desc">Add together the length of multiple selected lines or the area of multiple selected filled regions.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">13</span>
+                        <span class="tool-name"><img src="/Icons/RoomFinish.png" alt="add finish walls to room">RoomFinish</span>
+                        <span class="tool-desc">Automatically add finish walls to selected rooms with inputs for height and wall type.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">14</span>
+                        <span class="tool-name"><img src="/Icons/GridBubbleLeft.png" alt="Unify grid bubble orientations">LevelRt / LevelLt</span>
+                        <span class="tool-desc">Filp the heads of levels to match either all left or all right.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">15</span>
+                        <span class="tool-name"><img src="/Icons/ImportDirectory.png" alt="Load multiple families">LoadDirectory</span>
+                        <span class="tool-desc">Load all .rfa files in a file, including subfiles.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">16</span>
+                        <span class="tool-name"><img src="/Icons/RotateTrees.png" alt="Randomly rotate trees">RandomRotateTrees</span>
+                        <span class="tool-desc">Rotate all of the planting elements in the file randomly.</span>
+                    </li>
+                    <li class="tool-item">
+                        <span class="tool-number">17</span>
+                        <span class="tool-name"><img src="/Icons/DimensionGrids.png" alt="Dimension parallel grids">DimensionGrids</span>
+                        <span class="tool-desc">Add overall and intermittent dimensions for all parallel grids in view.</span>
+                    </li>
+                </ul>
+            </section>
+
+            
+            <section class="download" vid="51">
+                <div style="position: relative; z-index: 2;" vid="52">
+                    <h1 vid="53">deploy</h1>
+                    <p vid="54">Open source. MIT License. No subscription fees.</p>
+                    <a href="/Installations/motusTools2026.msi" class="cta-button" vid="55">Download Installer (.msi)</a>
+                    <div class="mono-caption" style="margin-top: 2rem;" vid="56">
+                        Revit 2026.1<br vid="57">
+                        Requires .NET Framework 8
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer style="border-top: 2px solid var(--ink); padding: 3rem 4rem; display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 4rem; position: relative; z-index: 2; background: var(--bg);" vid="58">
+            <div vid="59">
+                <h2 style="font-family: var(--font-mono); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid var(--ink); padding-bottom: 0.5rem; display: inline-block; margin-bottom: 1.5rem;" vid="60">Previous Releases</h2>
+                <ul style="list-style: none; font-family: var(--font-mono); font-size: 0.8rem; line-height: 2;" vid="61">
+                    <li style="display: flex; justify-content: space-between; max-width: 420px; border-bottom: 1px solid rgba(0,0,0,0.1); padding: 0.4rem 0;" vid="62"><span vid="63">motus 2.5.1</span><span style="color: rgba(0,0,0,0.4);" vid="64">Mar 2025</span><a href="/Installations/motusTools2025.msi" style="color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--ink);" vid="65">motus-2.5.1.msi</a></li>
+                    <li style="display: flex; justify-content: space-between; max-width: 420px; border-bottom: 1px solid rgba(0,0,0,0.1); padding: 0.4rem 0;" vid="66"><span vid="67">motus 2.4.0</span><span style="color: rgba(0,0,0,0.4);" vid="68">Nov 2024</span><a href="/Installations/motusTools2024.msi" style="color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--ink);" vid="69">motus-2.4.0.msi</a></li>
+                    <li style="display: flex; justify-content: space-between; max-width: 420px; border-bottom: 1px solid rgba(0,0,0,0.1); padding: 0.4rem 0;" vid="70"><span vid="71">motus 2.3.0</span><span style="color: rgba(0,0,0,0.4);" vid="72">Aug 2023</span><a href="/Installations/motusTools2023.msi" style="color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--ink);" vid="73">motus-2.3.0.msi</a></li>
+                    <li style="display: flex; justify-content: space-between; max-width: 420px; border-bottom: 1px solid rgba(0,0,0,0.1); padding: 0.4rem 0;" vid="74"><span vid="75">motus 2.2.0</span><span style="color: rgba(0,0,0,0.4);" vid="76">May 2022</span><a href="/Installations/motusTools2022.msi" style="color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--ink);" vid="77">motus-2.2.0.msi</a></li>
+                </ul>
             </div>
-        </section>
-
-    </main>
-
-    <footer style="border-top: 2px solid var(--ink); padding: 3rem 4rem; display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 4rem; position: relative; z-index: 2; background: var(--bg);" vid="58">
-        <div vid="59">
-            <h2 style="font-family: var(--font-mono); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid var(--ink); padding-bottom: 0.5rem; display: inline-block; margin-bottom: 1.5rem;" vid="60">Previous Releases</h2>
-            <ul style="list-style: none; font-family: var(--font-mono); font-size: 0.8rem; line-height: 2;" vid="61">
-                <li style="display: flex; justify-content: space-between; max-width: 420px; border-bottom: 1px solid rgba(0,0,0,0.1); padding: 0.4rem 0;" vid="62"><span vid="63">motus 2.5.1</span><span style="color: rgba(0,0,0,0.4);" vid="64">Mar 2025</span><a href="/Installations/motusTools2025.msi" style="color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--ink);" vid="65">motus-2.5.1.msi</a></li>
-                <li style="display: flex; justify-content: space-between; max-width: 420px; border-bottom: 1px solid rgba(0,0,0,0.1); padding: 0.4rem 0;" vid="66"><span vid="67">motus 2.4.0</span><span style="color: rgba(0,0,0,0.4);" vid="68">Nov 2024</span><a href="/Installations/motusTools2024.msi" style="color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--ink);" vid="69">motus-2.4.0.msi</a></li>
-                <li style="display: flex; justify-content: space-between; max-width: 420px; border-bottom: 1px solid rgba(0,0,0,0.1); padding: 0.4rem 0;" vid="70"><span vid="71">motus 2.3.0</span><span style="color: rgba(0,0,0,0.4);" vid="72">Aug 2023</span><a href="/Installations/motusTools2023.msi" style="color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--ink);" vid="73">motus-2.3.0.msi</a></li>
-                <li style="display: flex; justify-content: space-between; max-width: 420px; border-bottom: 1px solid rgba(0,0,0,0.1); padding: 0.4rem 0;" vid="74"><span vid="75">motus 2.2.0</span><span style="color: rgba(0,0,0,0.4);" vid="76">May 2022</span><a href="/Installations/motusTools2022.msi" style="color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--ink);" vid="77">motus-2.2.0.msi</a></li>
-            </ul>
-        </div>
-        <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;" vid="82">
-            <div vid="83">
-                <h1 style="font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; letter-spacing: -0.05em; line-height: 0.8; text-transform: lowercase; margin-bottom: 1rem;" vid="84">motus</h1>
-                <p style="font-family: var(--font-mono); font-size: 0.75rem; color: rgba(0,0,0,0.5); max-width: none;" vid="85">Algorithmic Design Suite for Autodesk Revit</p>
+            <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;" vid="82">
+                <div vid="83">
+                    <h1 style="font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; letter-spacing: -0.05em; line-height: 0.8; text-transform: lowercase; margin-bottom: 1rem;" vid="84">motus</h1>
+                    <p style="font-family: var(--font-mono); font-size: 0.75rem; color: rgba(0,0,0,0.5); max-width: none;" vid="85">Algorithmic Design Suite for Autodesk Revit</p>
+                </div>
+                <p style="font-family: var(--font-mono); font-size: 0.75rem; color: rgba(0,0,0,0.4); margin-top: 3rem; max-width: none;" vid="86">© <span id="copy-year" vid="87"></span> motus contributors. MIT License. All releases provided as-is with no warranty.</p>
             </div>
-            <p style="font-family: var(--font-mono); font-size: 0.75rem; color: rgba(0,0,0,0.4); margin-top: 3rem; max-width: none;" vid="86">© <span id="copy-year" vid="87"></span> motus contributors. MIT License. All releases provided as-is with no warranty.</p>
-        </div>
-    </footer>
+        </footer>
 
-    <script vid="58">
-        // Connecting dots background
-        (function() {
-            const canvas = document.getElementById('dot-canvas');
-            const ctx = canvas.getContext('2d');
-            const NUM_DOTS = 80;
-            const MAX_DIST = 160;
-            let dots = [];
+        <script vid="58">
+            // Connecting dots background
+            (function() {
+                const canvas = document.getElementById('dot-canvas');
+                const ctx = canvas.getContext('2d');
+                const NUM_DOTS = 80;
+                const MAX_DIST = 160;
+                let dots = [];
 
-            function resize() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            window.addEventListener('resize', resize);
-            resize();
+                function resize() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                window.addEventListener('resize', resize);
+                resize();
 
-            for (let i = 0; i < NUM_DOTS; i++) {
-                dots.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5,
-                    r: Math.random() * 2 + 1
-                });
-            }
-
-            function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                // Move dots
-                dots.forEach(d => {
-                    d.x += d.vx;
-                    d.y += d.vy;
-                    if (d.x < 0 || d.x > canvas.width)  d.vx *= -1;
-                    if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
-                });
-
-                // Draw lines
-                for (let i = 0; i < dots.length; i++) {
-                    for (let j = i + 1; j < dots.length; j++) {
-                        const dx = dots[i].x - dots[j].x;
-                        const dy = dots[i].y - dots[j].y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < MAX_DIST) {
-                            const alpha = (1 - dist / MAX_DIST) * 0.18;
-                            ctx.strokeStyle = `rgba(0,0,0,${alpha})`;
-                            ctx.lineWidth = 0.8;
-                            ctx.beginPath();
-                            ctx.moveTo(dots[i].x, dots[i].y);
-                            ctx.lineTo(dots[j].x, dots[j].y);
-                            ctx.stroke();
-                        }
-                    }
+                for (let i = 0; i < NUM_DOTS; i++) {
+                    dots.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        r: Math.random() * 2 + 1
+                    });
                 }
 
-                // Draw dots
-                dots.forEach(d => {
-                    ctx.beginPath();
-                    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(0,0,0,0.25)';
-                    ctx.fill();
+                function draw() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // Move dots
+                    dots.forEach(d => {
+                        d.x += d.vx;
+                        d.y += d.vy;
+                        if (d.x < 0 || d.x > canvas.width)  d.vx *= -1;
+                        if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
+                    });
+
+                    // Draw lines
+                    for (let i = 0; i < dots.length; i++) {
+                        for (let j = i + 1; j < dots.length; j++) {
+                            const dx = dots[i].x - dots[j].x;
+                            const dy = dots[i].y - dots[j].y;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist < MAX_DIST) {
+                                const alpha = (1 - dist / MAX_DIST) * 0.18;
+                                ctx.strokeStyle = `rgba(0,0,0,${alpha})`;
+                                ctx.lineWidth = 0.8;
+                                ctx.beginPath();
+                                ctx.moveTo(dots[i].x, dots[i].y);
+                                ctx.lineTo(dots[j].x, dots[j].y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+
+                    // Draw dots
+                    dots.forEach(d => {
+                        ctx.beginPath();
+                        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+                        ctx.fill();
+                    });
+
+                    requestAnimationFrame(draw);
+                }
+                draw();
+            })();
+        </script>
+
+        <script vid="59">
+            // Custom cursor
+            const cursor = document.getElementById('cursor');
+            
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+
+            
+            const links = document.querySelectorAll('a, .tool-item');
+            links.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursor.style.background = '#ffffff';
+                    cursor.style.mixBlendMode = 'exclusion';
                 });
-
-                requestAnimationFrame(draw);
-            }
-            draw();
-        })();
-    </script>
-    <script vid="59">
-        
-
-
-        const cursor = document.getElementById('cursor');
-        
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-
-        
-        const links = document.querySelectorAll('a, .tool-item');
-        links.forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-                cursor.style.background = '#ffffff';
-                cursor.style.mixBlendMode = 'exclusion';
+                link.addEventListener('mouseleave', () => {
+                    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursor.style.background = 'rgba(0,0,0,0.25)';
+                    cursor.style.mixBlendMode = 'normal';
+                });
             });
-            link.addEventListener('mouseleave', () => {
-                cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-                cursor.style.background = 'rgba(0,0,0,0.25)';
-                cursor.style.mixBlendMode = 'normal';
-            });
-        });
-    </script>
+        </script>
 
-</body></html>
+    </body>
+</html>

@@ -1,0 +1,414 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>contact | motus</title>
+        <style>
+            :root {
+                --bg: #ffffff;
+                --ink: #000000;
+                --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                --font-mono: 'Courier New', Courier, monospace;
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                cursor: none;
+            }
+
+            body {
+                background-color: var(--bg);
+                color: var(--ink);
+                font-family: var(--font-main);
+                overflow-x: hidden;
+                width: 100vw;
+                min-height: 100vh;
+            }
+
+            #cursor {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 24px;
+                height: 24px;
+                background: rgba(0,0,0,0.25);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 9999;
+                transform: translate(-50%, -50%);
+                mix-blend-mode: normal;
+                transition: width 0.15s ease, height 0.15s ease, border-radius 0.15s ease, background 0.15s ease;
+            }
+
+            h1 {
+                font-size: clamp(4rem, 15vw, 12rem);
+                font-weight: 900;
+                letter-spacing: -0.05em;
+                line-height: 0.8;
+                text-transform: lowercase;
+                margin-bottom: 2rem;
+            }
+
+            h2 {
+                font-family: var(--font-mono);
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                margin-bottom: 1rem;
+                border-bottom: 1px solid var(--ink);
+                padding-bottom: 0.5rem;
+                display: inline-block;
+            }
+
+            p {
+                font-size: 1.5rem;
+                line-height: 1.4;
+                max-width: 60ch;
+                font-weight: 400;
+            }
+
+            .mono-caption {
+                font-family: var(--font-mono);
+                font-size: 0.75rem;
+                line-height: 1.6;
+            }
+
+            main {
+                display: grid;
+                grid-template-columns: 1fr;
+                width: 100%;
+            }
+
+            section {
+                min-height: 100vh;
+                padding: 4rem;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Back nav */
+            .back-nav {
+                padding: 2rem 4rem;
+                border-bottom: 2px solid var(--ink);
+                display: flex;
+                align-items: center;
+            }
+
+            .back-link {
+                font-family: var(--font-mono);
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: var(--ink);
+                text-decoration: none;
+                border-bottom: 1px solid var(--ink);
+                padding-bottom: 0.2rem;
+                transition: opacity 0.2s ease;
+            }
+
+            .back-link:hover {
+                opacity: 0.5;
+            }
+
+            /* Contact section */
+            .contact {
+                justify-content: flex-end;
+                padding-bottom: 6rem;
+            }
+
+            .contact-content {
+                width: 100%;
+                max-width: 720px;
+            }
+
+            /* Form */
+            form {
+                margin-top: 3rem;
+                display: flex;
+                flex-direction: column;
+                gap: 2.5rem;
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            label {
+                font-family: var(--font-mono);
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: rgba(0,0,0,0.6);
+            }
+
+            input[type="text"],
+            input[type="email"],
+            textarea {
+                background: transparent;
+                border: none;
+                border-bottom: 2px solid var(--ink);
+                font-family: var(--font-main);
+                font-size: 1.2rem;
+                color: var(--ink);
+                padding: 0.75rem 0;
+                width: 100%;
+                outline: none;
+                transition: border-color 0.2s ease;
+                cursor: none;
+            }
+
+            input[type="text"]:focus,
+            input[type="email"]:focus,
+            textarea:focus {
+                border-bottom-color: var(--ink);
+                border-bottom-width: 3px;
+            }
+
+            textarea {
+                resize: none;
+                min-height: 140px;
+                line-height: 1.5;
+            }
+
+            /* Honey-pot: visually hidden but reachable by bots */
+            .hp-field {
+                position: absolute;
+                left: -9999px;
+                top: -9999px;
+                opacity: 0;
+                height: 0;
+                overflow: hidden;
+            }
+
+            .cta-button {
+                display: inline-block;
+                background: var(--ink);
+                color: var(--bg);
+                padding: 2rem 4rem;
+                font-size: 2rem;
+                font-weight: 700;
+                text-decoration: none;
+                border: 2px solid var(--ink);
+                transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+                align-self: flex-start;
+                font-family: var(--font-main);
+                letter-spacing: -0.02em;
+            }
+
+            .cta-button:hover {
+                background: var(--bg);
+                color: var(--ink);
+                transform: scale(0.98);
+            }
+
+            /* Success / error states */
+            .form-message {
+                font-family: var(--font-mono);
+                font-size: 0.85rem;
+                padding: 1rem 0;
+                border-top: 2px solid var(--ink);
+                display: none;
+            }
+
+            .form-message.visible {
+                display: block;
+            }
+
+            /* Stamp */
+            .stamp {
+                position: absolute;
+                bottom: 4rem;
+                right: 4rem;
+                width: 100px;
+                height: 100px;
+                border: 1px solid var(--ink);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: var(--font-mono);
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                animation: spin 10s linear infinite;
+            }
+
+            @keyframes spin {
+                100% { transform: rotate(360deg); }
+            }
+
+            @media (max-width: 768px) {
+                h1 { font-size: 20vw; }
+                section { padding: 2rem; }
+                .back-nav { padding: 1.5rem 2rem; }
+                .stamp { display: none; }
+                .cta-button { padding: 1.5rem 2.5rem; font-size: 1.5rem; align-self: stretch; text-align: center; }
+            }
+        </style>
+
+        <script
+            src="https://analytics.manaiakalani.info/api/script.js"
+            data-site-id="744d43be254d"
+            defer
+        ></script>
+    </head>
+
+    <body>
+
+        <div id="cursor"></div>
+
+        <nav class="back-nav">
+            <a href="/" class="back-link">← motus</a>
+        </nav>
+
+        <main>
+            <section class="contact">
+                <div class="contact-content">
+                    <h2>Get in touch</h2>
+                    <h1>contact</h1>
+                    <p>Questions, bug reports, feature requests — or just want to say hi.</p>
+
+                    <!--
+                        Form submissions are handled by Formspree.
+                        Sign up at https://formspree.io, create a form, and replace
+                        YOUR_FORM_ID below with your actual form ID.
+                    -->
+                    <form
+                        id="contact-form"
+                        action="https://formspree.io/f/YOUR_FORM_ID"
+                        method="POST"
+                    >
+                        <!-- Honey-pot: bots fill this in, humans never see it -->
+                        <div class="hp-field" aria-hidden="true">
+                            <label for="hp-website">Website</label>
+                            <input
+                                type="text"
+                                id="hp-website"
+                                name="website"
+                                tabindex="-1"
+                                autocomplete="off"
+                                value=""
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" required autocomplete="name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required autocomplete="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" required></textarea>
+                        </div>
+
+                        <p class="form-message" id="form-msg" role="alert"></p>
+
+                        <button type="submit" class="cta-button">Send Message</button>
+                    </form>
+                </div>
+
+                <div class="stamp">CONTACT // MOTUS</div>
+            </section>
+        </main>
+
+        <footer style="border-top: 2px solid var(--ink); padding: 3rem 4rem; display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 4rem; background: var(--bg);">
+            <div>
+                <h1 style="font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; letter-spacing: -0.05em; line-height: 0.8; text-transform: lowercase; margin-bottom: 1rem;">motus</h1>
+                <p style="font-family: var(--font-mono); font-size: 0.75rem; color: rgba(0,0,0,0.5); max-width: none;">Algorithmic Design Suite for Autodesk Revit</p>
+            </div>
+            <p style="font-family: var(--font-mono); font-size: 0.75rem; color: rgba(0,0,0,0.4); max-width: none; align-self: end;">© <span id="copy-year"></span> motus contributors. MIT License.</p>
+        </footer>
+
+        <script>
+            // Custom cursor
+            const cursor = document.getElementById('cursor');
+
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+
+            const interactives = document.querySelectorAll('a, button, input, textarea');
+            interactives.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.style.background = '#ffffff';
+                    cursor.style.mixBlendMode = 'exclusion';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.style.background = 'rgba(0,0,0,0.25)';
+                    cursor.style.mixBlendMode = 'normal';
+                });
+            });
+        </script>
+
+        <script>
+            document.getElementById('copy-year').textContent = new Date().getFullYear();
+
+            const form = document.getElementById('contact-form');
+            const msg  = document.getElementById('form-msg');
+            const hp   = document.getElementById('hp-website');
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Honey-pot check: bot filled the hidden field — silently fake success
+                if (hp.value.trim() !== '') {
+                    showSuccess();
+                    return;
+                }
+
+                const action = form.getAttribute('action');
+
+                // Formspree ID not yet configured — fall back to native POST
+                if (action.includes('YOUR_FORM_ID')) {
+                    form.submit();
+                    return;
+                }
+
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.textContent = 'Sending…';
+                submitBtn.disabled = true;
+
+                try {
+                    const res = await fetch(action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    if (res.ok) {
+                        showSuccess();
+                    } else {
+                        submitBtn.textContent = 'Send Message';
+                        submitBtn.disabled = false;
+                        showMsg('Something went wrong. Please try again.');
+                    }
+                } catch {
+                    submitBtn.textContent = 'Send Message';
+                    submitBtn.disabled = false;
+                    showMsg('Network error. Please try again.');
+                }
+            });
+
+            function showSuccess() {
+                form.style.display = 'none';
+                showMsg('Message sent. Thank you!');
+            }
+
+            function showMsg(text) {
+                msg.textContent = text;
+                msg.classList.add('visible');
+            }
+        </script>
+
+    </body>
+</html>
